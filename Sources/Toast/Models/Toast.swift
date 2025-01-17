@@ -10,15 +10,22 @@ public struct Toast {
     let icon: Image
     let color: Color
     let message: String
-
+    
+    let buttonTitle: String?
+    let buttonAction: (() -> ())?
+    
     public init(
         icon: Image,
         color: Color,
-        message: String
+        message: String,
+        buttonTitle: String? = nil,
+        buttonAction: (() -> ())? = nil
     ) {
         self.icon = icon
         self.color = color
         self.message = message
+        self.buttonTitle = buttonTitle
+        self.buttonAction = buttonAction
     }
 }
 
@@ -26,38 +33,45 @@ extension Toast: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(color)
         hasher.combine(message)
+        hasher.combine(buttonTitle)
+    }
+}
+
+extension Toast: Equatable {
+    public static func == (lhs: Toast, rhs: Toast) -> Bool {
+        return lhs.color == rhs.color && lhs.message == rhs.message && lhs.buttonTitle == rhs.buttonTitle
     }
 }
 
 /// Extension to the Toast struct to provide convenience initializers for different types of toasts.
 extension Toast {
     /// Creates a debug toast with a purple color and a debug icon.
-    public static func debug(message: String) -> Toast {
+    public static func debug(message: String, buttonTitle: String? = nil, buttonAction: (() -> ())? = nil) -> Toast {
         .init(icon: Image(.debug), color: .purple, message: message)
     }
     
     /// Creates an error toast with a red color and an error icon.
-    public static func error(message: String) -> Toast {
+    public static func error(message: String, buttonTitle: String? = nil, buttonAction: (() -> ())? = nil) -> Toast {
         .init(icon: Image(.error), color: .red, message: message)
     }
     
     /// Creates an info toast with a blue color and an info icon.
-    public static func info(message: String) -> Toast {
+    public static func info(message: String, buttonTitle: String? = nil, buttonAction: (() -> ())? = nil) -> Toast {
         .init(icon: Image(.info), color: .blue, message: message)
     }
     
     /// Creates a notice toast with an orange color and a notice icon.
-    public static func notice(message: String) -> Toast {
-        .init(icon: Image(.notice), color: .orange, message: message)
+    public static func notice(message: String, buttonTitle: String? = nil, buttonAction: (() -> ())? = nil) -> Toast {
+        .init(icon: Image(.notice), color: .orange, message: message, buttonTitle: buttonTitle, buttonAction: buttonAction)
     }
     
     /// Creates a success toast with a green color and a success icon.
-    public static func success(message: String) -> Toast {
+    public static func success(message: String, buttonTitle: String? = nil, buttonAction: (() -> ())? = nil) -> Toast {
         .init(icon: Image(.success), color: .green, message: message)
     }
     
     /// Creates a warning toast with a yellow color and a warning icon.
-    public static func warning(message: String) -> Toast {
+    public static func warning(message: String, buttonTitle: String? = nil, buttonAction: (() -> ())? = nil) -> Toast {
         .init(icon: Image(.warning), color: .yellow, message: message)
     }
 }
