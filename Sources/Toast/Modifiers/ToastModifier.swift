@@ -83,7 +83,7 @@ extension ToastModifier: ViewModifier {
     @ViewBuilder
     private func toastView() -> some View {
         if let toast {
-            ToastMessageView(toast)
+			ToastMessageView<EmptyView>(toast)
                 .offset(y: yOffset)
                 .gesture(dragGesture)
         }
