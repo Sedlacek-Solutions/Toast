@@ -8,12 +8,12 @@ import SwiftUI
 
 struct ToastMessageView<T: View>: View {
     private let toast: Toast
-	private let trailingButtonView: T?
+    private let trailingButtonView: T?
 
-	init(_ toast: Toast, @ViewBuilder trailingButtonView: () -> T? = { nil }) {
-		self.toast = toast
-		self.trailingButtonView = trailingButtonView()
-	}
+    init(_ toast: Toast, @ViewBuilder trailingButtonView: () -> T? = { nil }) {
+        self.toast = toast
+        self.trailingButtonView = trailingButtonView()
+    }
 
     var body: some View {
         HStack(spacing: 10) {
@@ -27,16 +27,16 @@ struct ToastMessageView<T: View>: View {
 
             Spacer(minLength: .zero)
 
-			if let trailingButtonView {
-				trailingButtonView
-					.padding(.horizontal, 10)
-					.padding(.vertical, 5)
-					.fontWeight(.semibold)
-					.foregroundStyle(toast.color)
-					.background(toast.color.opacity(0.2),
-								in: .rect(cornerRadius: 5)
-					)
-			}
+            if let trailingButtonView {
+                trailingButtonView
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(toast.color)
+                    .background(toast.color.opacity(0.2),
+                                in: .rect(cornerRadius: 5)
+                    )
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
@@ -70,18 +70,18 @@ extension ToastMessageView where T == EmptyView {
     }
 
     static var debugExample: some View {
-		ToastMessageView(.debug(message: "Line 32 in `File.swift` executed."))
+        ToastMessageView(.debug(message: "Line 32 in `File.swift` executed."))
     }
 }
 
 extension ToastMessageView where T == Button<Text> {
-	static var noticeExample: some View {
-		ToastMessageView(.notice(message: "A software update is available.")) {
-			Button("Update") {
-				print("Update pressed")
-			}
-		}
-	}
+    static var noticeExample: some View {
+        ToastMessageView(.notice(message: "A software update is available.")) {
+            Button("Update") {
+                print("Update pressed")
+            }
+        }
+    }
 }
 
 #Preview {
@@ -91,6 +91,6 @@ extension ToastMessageView where T == Button<Text> {
         ToastMessageView.errorExample
         ToastMessageView.successExample
         ToastMessageView.debugExample
-		ToastMessageView.noticeExample
+        ToastMessageView.noticeExample
     }
 }
