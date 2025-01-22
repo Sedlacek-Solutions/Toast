@@ -8,11 +8,11 @@ import SwiftUI
 
 struct ToastMessageView<T: View>: View {
     private let toast: Toast
-    private let trailingButtonView: T?
+    private let trailingView: T?
 
-    init(_ toast: Toast, @ViewBuilder trailingButtonView: () -> T? = { nil }) {
+    init(_ toast: Toast, @ViewBuilder trailingView: () -> T? = { nil }) {
         self.toast = toast
-        self.trailingButtonView = trailingButtonView()
+        self.trailingView = trailingView()
     }
 
     var body: some View {
@@ -27,15 +27,9 @@ struct ToastMessageView<T: View>: View {
 
             Spacer(minLength: .zero)
 
-            if let trailingButtonView {
-                trailingButtonView
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 5)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(toast.color)
-                    .background(toast.color.opacity(0.2),
-                                in: .rect(cornerRadius: 5)
-                    )
+            if let trailingView {
+                trailingView
+                    .buttonStyle(ToastTrailingButtonStyle(toast: toast))
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -52,17 +46,11 @@ struct ToastMessageView<T: View>: View {
     }
 }
 
+// MARK: Example Usages
+
 extension ToastMessageView where T == EmptyView {
     static var infoExample: some View {
         ToastMessageView(.info(message: "Something informational for the user."))
-    }
-
-    static var warningExample: some View {
-        ToastMessageView(.warning(message: "Something went wrong!"))
-    }
-
-    static var errorExample: some View {
-        ToastMessageView(.error(message: "Network error!"))
     }
 
     static var successExample: some View {
@@ -78,7 +66,27 @@ extension ToastMessageView where T == Button<Text> {
     static var noticeExample: some View {
         ToastMessageView(.notice(message: "A software update is available.")) {
             Button("Update") {
-                print("Update pressed")
+                print("Update pressed!")
+            }
+        }
+    }
+}
+
+struct NetworkErrorExample: View {
+    var body: some View {
+        ToastMessageView(.error(message: "Network Error.")) {
+            ProgressView()
+        }
+    }
+}
+
+struct SomethingWrongExample: View {
+    var body: some View {
+        ToastMessageView(.warning(message: "Something went wrong!")) {
+            Button(action:  {
+                print("Go to logs")
+            }) {
+                Image(systemName: "doc.text.magnifyingglass")
             }
         }
     }
@@ -87,10 +95,10 @@ extension ToastMessageView where T == Button<Text> {
 #Preview {
     VStack(spacing: 16) {
         ToastMessageView.infoExample
-        ToastMessageView.warningExample
-        ToastMessageView.errorExample
         ToastMessageView.successExample
         ToastMessageView.debugExample
         ToastMessageView.noticeExample
+        NetworkErrorExample()
+        SomethingWrongExample()
     }
 }
