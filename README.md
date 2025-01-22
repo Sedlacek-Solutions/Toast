@@ -86,3 +86,16 @@ func toast(
     onDismiss: @escaping () -> Void = {}
 ) -> some View {...}
 ```
+4. Adding a Trailing Button to Toasts
+```swift
+/// Add interactive elements such as buttons, icons, or loading indicators to the toast message.
+/// Example: Toast With an Action Button
+ToastMessageView(.notice(message: "A software update is available.")) {
+    Button("Update") {
+        print("Update pressed!")
+    }
+}
+```
+
+## Screenshots
+<img width="309" alt="Screenshot 2025-01-22 at 6 17 13 PM" src="https://github.com/user-attachments/assets/22665a33-391e-41c9-ae32-76883807fdae" />
