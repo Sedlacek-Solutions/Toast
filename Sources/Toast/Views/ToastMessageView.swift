@@ -93,7 +93,7 @@ struct SomethingWrongExample: View {
     }
 }
 
-struct ContentView: View {
+struct ExampleView: View {
     @State private var toast: Toast? = nil
 
     var body: some View {
@@ -114,7 +114,7 @@ struct ContentView: View {
 
 #Preview {
     VStack(spacing: 16) {
-        ContentView()
+        ExampleView()
         ToastMessageView.infoExample
         ToastMessageView.successExample
         ToastMessageView.debugExample
