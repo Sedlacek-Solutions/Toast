@@ -29,7 +29,6 @@ struct ToastMessageView<T: View>: View {
 
             if let trailingView {
                 trailingView
-                    .buttonStyle(ToastTrailingButtonStyle(toast: toast))
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -64,11 +63,12 @@ extension ToastMessageView where T == EmptyView {
 
 extension ToastMessageView where T == Button<Text> {
     static var noticeExample: some View {
-        ToastMessageView(.notice(message: "A software update is available.")) {
+        return ToastMessageView(.notice(message: "A software update is available.")) {
             Button("Update") {
-                print("Update pressed!")
+                print("Update pressed")
             }
         }
+        .buttonStyle(.toastTrailing(toastType: .notice()))
     }
 }
 
@@ -88,16 +88,36 @@ struct SomethingWrongExample: View {
             }) {
                 Image(systemName: "doc.text.magnifyingglass")
             }
+            .buttonStyle(.toastTrailing(toastType: .warning()))
+        }
+    }
+}
+
+struct ContentView: View {
+    @State private var toast: Toast? = nil
+
+    var body: some View {
+        VStack {
+            Button("Show Update Toast") {
+                toast = .notice(message: "A software update is available.")
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .toast($toast, autoDismissable: false) {
+            Button("Update") {
+                print("Update Pressed")
+            }
+            .buttonStyle(.toastTrailing(toastType: .notice()))
         }
     }
 }
 
 #Preview {
     VStack(spacing: 16) {
+        ContentView()
         ToastMessageView.infoExample
         ToastMessageView.successExample
         ToastMessageView.debugExample
-        ToastMessageView.noticeExample
         NetworkErrorExample()
         SomethingWrongExample()
     }

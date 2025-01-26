@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-struct ToastTrailingButtonStyle: ButtonStyle {
+public struct ToastTrailingButtonStyle: ButtonStyle {
 
     let toast: Toast
 
-    func makeBody(configuration: Configuration) -> some View {
+    public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .padding(.horizontal, 10)
             .padding(.vertical, 5)
@@ -19,5 +19,12 @@ struct ToastTrailingButtonStyle: ButtonStyle {
             .foregroundStyle(toast.color)
             .background(toast.color.opacity(0.2), in: .rect(cornerRadius: 5))
             .opacity(configuration.isPressed ? 0.7 : 1.0)
+    }
+}
+
+extension ButtonStyle where Self == ToastTrailingButtonStyle {
+    @MainActor
+    public static func toastTrailing(toastType toast: Toast) -> ToastTrailingButtonStyle {
+        return .init(toast: toast)
     }
 }
