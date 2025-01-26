@@ -51,22 +51,22 @@ extension ExampleScreen: View {
 /// Extension to the Toast struct to provide convenience initializers for different types of toasts.
 extension Toast {
     /// Creates a debug toast with a purple color and a debug icon.
-    public static func debug(message: String) -> Toast {...}
+    public static func debug(message: String = "") -> Toast {...}
 
     /// Creates an error toast with a red color and an error icon.
-    public static func error(message: String) -> Toast {...}
+    public static func error(message: String = "") -> Toast {...}
 
     /// Creates an info toast with a blue color and an info icon.
-    public static func info(message: String) -> Toast {...}
+    public static func info(message: String = "") -> Toast {...}
 
     /// Creates a notice toast with an orange color and a notice icon.
-    public static func notice(message: String) -> Toast {...}
+    public static func notice(message: String = "") -> Toast {...}
 
     /// Creates a success toast with a green color and a success icon.
-    public static func success(message: String) -> Toast {...}
+    public static func success(message: String = "") -> Toast {...}
 
     /// Creates a warning toast with a yellow color and a warning icon.
-    public static func warning(message: String) -> Toast {...}
+    public static func warning(message: String = "") -> Toast {...}
 }
 ```
 
@@ -121,7 +121,6 @@ struct ExampleView: View {
 - **Multiple Toast Types**: `success`, `error`, `info`, `warning`, `notice`
 - **Supports Trailing Views**: Buttons, Icons, Loaders
 - **Auto-Dismiss & Manual Dismiss**: Configurable behavior
-- **Position Control**: Show toast at the top or bottom
 - **Flexible Customization**: Accepts any SwiftUI view as a trailing element
 
 ## Example Use Cases
@@ -132,3 +131,8 @@ struct ExampleView: View {
 | Actionable Toast   | `.toast($toast) { Button("OK") { ... } }`      |
 | Loading Indicator  | `.toast($toast) { ProgressView() }`            |
 | Auto-dismiss Toast | `.toast($toast, autoDismissable: true)`        |
+
+## Previews
+
+https://github.com/user-attachments/assets/a22d7e4e-e3dd-4733-8070-235c631e8292
+
