@@ -51,22 +51,22 @@ extension ExampleScreen: View {
 /// Extension to the Toast struct to provide convenience initializers for different types of toasts.
 extension Toast {
     /// Creates a debug toast with a purple color and a debug icon.
-    public static func debug(message: String = "") -> Toast {...}
+    public static func debug(message: String) -> Toast {...}
 
     /// Creates an error toast with a red color and an error icon.
-    public static func error(message: String = "") -> Toast {...}
+    public static func error(message: String) -> Toast {...}
 
     /// Creates an info toast with a blue color and an info icon.
-    public static func info(message: String = "") -> Toast {...}
+    public static func info(message: String) -> Toast {...}
 
     /// Creates a notice toast with an orange color and a notice icon.
-    public static func notice(message: String = "") -> Toast {...}
+    public static func notice(message: String) -> Toast {...}
 
     /// Creates a success toast with a green color and a success icon.
-    public static func success(message: String = "") -> Toast {...}
+    public static func success(message: String) -> Toast {...}
 
     /// Creates a warning toast with a yellow color and a warning icon.
-    public static func warning(message: String = "") -> Toast {...}
+    public static func warning(message: String) -> Toast {...}
 }
 ```
 
@@ -77,14 +77,14 @@ extension Toast {
 ///   - toast: A binding to the toast to display.
 ///   - edge: The edge of the screen where the toast appears.
 ///   - autoDismissable: Whether the toast should automatically dismiss.
-///   - trailingView: A customizable action view
 ///   - onDismiss: A closure to call when the toast is dismissed.
+///   - trailingView: A closure that returns an optional trailing view to be displayed in the toast.
 func toast<TrailingView: View>(
     _ toast: Binding<Toast?>,
     edge: VerticalEdge = .top,
     autoDismissable: Bool = false,
-    @ViewBuilder trailingView: @escaping () -> TrailingView? = { nil },
-    onDismiss: @escaping () -> Void = {}
+    onDismiss: @escaping () -> Void = {},
+    @ViewBuilder trailingView: @escaping () -> TrailingView? = { nil }
 ) -> some View {...}
 ```
 
@@ -92,29 +92,37 @@ func toast<TrailingView: View>(
 ```swift
 /// Add interactive elements such as buttons, icons, or loading indicators to the toast message.
 /// Example usage:
-struct ExampleView: View {
-    @State private var toast: Toast? = nil
+@MainActor
+struct ExampleView {
+    @State private var toastToPresent: Toast? = nil
 
-    var body: some View {
-        VStack {
-            Button("Show Update Toast") {
-                toast = .notice(message: "A software update is available.")
-            }
-        }
-        .toast($toast, autoDismissable: false) {
-            Button("Update") {
-                print("Update Pressed")
-            }
-            .buttonStyle(.toastTrailing(toastType: .notice()))
-        }
+    private func showAction() {
+        toastToPresent = .notice(message: "A software update is available.")
+    }
+
+    private func updateAction() {
+        print("Update Pressed")
     }
 }
 
-/// Explanation:
-/// - The `.toast()` modifier is applied to the `VStack`, with `autoDismissable: false` to keep the toast visible until the user dismisses it.
-/// - The trailing view is a `Button` labeled "Update", which prints "Update Pressed" when tapped.
-/// - The `.buttonStyle(.toastTrailing(toastType: .notice()))` ensures that the button matches
-///   the toast’s color scheme and styling.
+extension ExampleView: View {
+    var body: some View {
+        Button("Show Update Toast", action: showAction)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(40)
+            .toast($toastToPresent, trailingView: updateButton)
+    }
+
+    @ViewBuilder
+    private func updateButton() -> some View {
+        if let toastToPresent {
+            Button("Update", action: updateAction)
+                .buttonStyle(
+                    .toastTrailing(tintColor: toastToPresent.color)
+                )
+        }
+    }
+}
 ```
 
 ## Features

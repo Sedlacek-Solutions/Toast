@@ -24,8 +24,8 @@ struct ToastModifier<TrailingView: View>: ViewModifier {
         toast: Binding<Toast?>,
         edge: VerticalEdge,
         isAutoDismissed: Bool,
-        trailingView: TrailingView?,
-        onDismiss: @escaping () -> Void
+        onDismiss: @escaping () -> Void,
+        trailingView: TrailingView?
     ) {
         self._toast = toast
         self.edge = edge

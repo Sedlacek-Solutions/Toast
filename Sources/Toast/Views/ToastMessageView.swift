@@ -6,11 +6,11 @@
 
 import SwiftUI
 
-struct ToastMessageView<T: View>: View {
+struct ToastMessageView<TrailingView: View>: View {
     private let toast: Toast
-    private let trailingView: T?
+    private let trailingView: TrailingView?
 
-    init(_ toast: Toast, @ViewBuilder trailingView: () -> T? = { nil }) {
+    init(_ toast: Toast, @ViewBuilder trailingView: () -> TrailingView? = { nil }) {
         self.toast = toast
         self.trailingView = trailingView()
     }
@@ -47,7 +47,7 @@ struct ToastMessageView<T: View>: View {
 
 // MARK: Example Usages
 
-extension ToastMessageView where T == EmptyView {
+extension ToastMessageView where TrailingView == EmptyView {
     static var infoExample: some View {
         ToastMessageView(.info(message: "Something informational for the user."))
     }
@@ -61,20 +61,9 @@ extension ToastMessageView where T == EmptyView {
     }
 }
 
-extension ToastMessageView where T == Button<Text> {
-    static var noticeExample: some View {
-        return ToastMessageView(.notice(message: "A software update is available.")) {
-            Button("Update") {
-                print("Update pressed")
-            }
-        }
-        .buttonStyle(.toastTrailing(toastType: .notice()))
-    }
-}
-
 struct NetworkErrorExample: View {
     var body: some View {
-        ToastMessageView(.error(message: "Network Error.")) {
+        ToastMessageView(.error(message: "Network Error!")) {
             ProgressView()
         }
     }
@@ -88,26 +77,39 @@ struct SomethingWrongExample: View {
             }) {
                 Image(systemName: "doc.text.magnifyingglass")
             }
-            .buttonStyle(.toastTrailing(toastType: .warning()))
+            .buttonStyle(.toastTrailing(tintColor: .yellow))
         }
     }
 }
 
-struct ExampleView: View {
-    @State private var toast: Toast? = nil
+@MainActor
+struct ExampleView {
+    @State private var toastToPresent: Toast? = nil
 
+    private func showAction() {
+        toastToPresent = .notice(message: "A software update is available.")
+    }
+
+    private func updateAction() {
+        print("Update Pressed")
+    }
+}
+
+extension ExampleView: View {
     var body: some View {
-        VStack {
-            Button("Show Update Toast") {
-                toast = .notice(message: "A software update is available.")
-            }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .toast($toast, autoDismissable: false) {
-            Button("Update") {
-                print("Update Pressed")
-            }
-            .buttonStyle(.toastTrailing(toastType: .notice()))
+        Button("Show Update Toast", action: showAction)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(40)
+            .toast($toastToPresent, trailingView: updateButton)
+    }
+
+    @ViewBuilder
+    private func updateButton() -> some View {
+        if let toastToPresent {
+            Button("Update", action: updateAction)
+                .buttonStyle(
+                    .toastTrailing(tintColor: toastToPresent.color)
+                )
         }
     }
 }
