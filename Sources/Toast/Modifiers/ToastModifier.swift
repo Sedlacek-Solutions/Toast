@@ -7,11 +7,12 @@
 import SwiftUI
 
 @MainActor
-struct ToastModifier {
+struct ToastModifier<TrailingView: View>: ViewModifier {
     private let edge: VerticalEdge
     private let offset: CGFloat
     private let isAutoDismissed: Bool
     private let onDismiss: () -> Void
+    private let trailingView: TrailingView?
     @Binding private var toast: Toast?
     @State private var isPresented: Bool = false
 
@@ -23,11 +24,13 @@ struct ToastModifier {
         toast: Binding<Toast?>,
         edge: VerticalEdge,
         isAutoDismissed: Bool,
+        trailingView: TrailingView?,
         onDismiss: @escaping () -> Void
     ) {
         self._toast = toast
         self.edge = edge
         self.isAutoDismissed = isAutoDismissed
+        self.trailingView = trailingView
         self.onDismiss = onDismiss
         self.offset = edge == .top ? -200 : 200
     }
@@ -68,9 +71,7 @@ struct ToastModifier {
             dismissToastAnimation()
         }
     }
-}
 
-extension ToastModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .onChange(of: toast, onChangeToast)
@@ -83,7 +84,7 @@ extension ToastModifier: ViewModifier {
     @ViewBuilder
     private func toastView() -> some View {
         if let toast {
-            ToastMessageView(toast)
+            ToastMessageView(toast, trailingView: { trailingView })
                 .offset(y: yOffset)
                 .gesture(dragGesture)
         }

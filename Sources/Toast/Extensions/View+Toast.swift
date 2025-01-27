@@ -14,10 +14,11 @@ public extension View {
     ///   - edge: The edge of the screen where the toast appears.
     ///   - autoDismissable: Whether the toast should automatically dismiss.
     ///   - onDismiss: A closure to call when the toast is dismissed.
-    func toast(
+    func toast<TrailingView: View>(
         _ toast: Binding<Toast?>,
         edge: VerticalEdge = .top,
         autoDismissable: Bool = false,
+        @ViewBuilder trailingView: @escaping () -> TrailingView? = { nil },
         onDismiss: @escaping () -> Void = {}
     ) -> some View {
         modifier(
@@ -25,6 +26,7 @@ public extension View {
                 toast: toast,
                 edge: edge,
                 isAutoDismissed: autoDismissable,
+                trailingView: trailingView(),
                 onDismiss: onDismiss
             )
         )

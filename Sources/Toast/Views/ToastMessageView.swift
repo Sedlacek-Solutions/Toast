@@ -6,11 +6,13 @@
 
 import SwiftUI
 
-struct ToastMessageView: View {
+struct ToastMessageView<T: View>: View {
     private let toast: Toast
+    private let trailingView: T?
 
-    init(_ toast: Toast) {
+    init(_ toast: Toast, @ViewBuilder trailingView: () -> T? = { nil }) {
         self.toast = toast
+        self.trailingView = trailingView()
     }
 
     var body: some View {
@@ -18,10 +20,16 @@ struct ToastMessageView: View {
             toast.icon
                 .font(.system(size: 24, weight: .medium))
                 .foregroundStyle(toast.color)
+
             Text(toast.message)
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(.primary)
+
             Spacer(minLength: .zero)
+
+            if let trailingView {
+                trailingView
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
@@ -37,25 +45,15 @@ struct ToastMessageView: View {
     }
 }
 
-extension ToastMessageView {
+// MARK: Example Usages
+
+extension ToastMessageView where T == EmptyView {
     static var infoExample: some View {
         ToastMessageView(.info(message: "Something informational for the user."))
     }
 
-    static var warningExample: some View {
-        ToastMessageView(.warning(message: "Something went wrong!"))
-    }
-
-    static var errorExample: some View {
-        ToastMessageView(.error(message: "Network error!"))
-    }
-
     static var successExample: some View {
         ToastMessageView(.success(message: "Successfully did the thing!"))
-    }
-
-    static var noticeExample: some View {
-        ToastMessageView(.notice(message: "A software update is available."))
     }
 
     static var debugExample: some View {
@@ -63,13 +61,64 @@ extension ToastMessageView {
     }
 }
 
+extension ToastMessageView where T == Button<Text> {
+    static var noticeExample: some View {
+        return ToastMessageView(.notice(message: "A software update is available.")) {
+            Button("Update") {
+                print("Update pressed")
+            }
+        }
+        .buttonStyle(.toastTrailing(toastType: .notice()))
+    }
+}
+
+struct NetworkErrorExample: View {
+    var body: some View {
+        ToastMessageView(.error(message: "Network Error.")) {
+            ProgressView()
+        }
+    }
+}
+
+struct SomethingWrongExample: View {
+    var body: some View {
+        ToastMessageView(.warning(message: "Something went wrong!")) {
+            Button(action:  {
+                print("Go to logs")
+            }) {
+                Image(systemName: "doc.text.magnifyingglass")
+            }
+            .buttonStyle(.toastTrailing(toastType: .warning()))
+        }
+    }
+}
+
+struct ExampleView: View {
+    @State private var toast: Toast? = nil
+
+    var body: some View {
+        VStack {
+            Button("Show Update Toast") {
+                toast = .notice(message: "A software update is available.")
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .toast($toast, autoDismissable: false) {
+            Button("Update") {
+                print("Update Pressed")
+            }
+            .buttonStyle(.toastTrailing(toastType: .notice()))
+        }
+    }
+}
+
 #Preview {
     VStack(spacing: 16) {
+        ExampleView()
         ToastMessageView.infoExample
-        ToastMessageView.warningExample
-        ToastMessageView.errorExample
         ToastMessageView.successExample
-        ToastMessageView.noticeExample
         ToastMessageView.debugExample
+        NetworkErrorExample()
+        SomethingWrongExample()
     }
 }
