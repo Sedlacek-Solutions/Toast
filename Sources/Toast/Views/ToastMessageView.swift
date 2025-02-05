@@ -8,9 +8,12 @@ import SwiftUI
 
 struct ToastMessageView<TrailingView: View>: View {
     private let toast: Toast
-    private let trailingView: TrailingView?
+    private let trailingView: TrailingView
 
-    init(_ toast: Toast, @ViewBuilder trailingView: () -> TrailingView? = { nil }) {
+    init(
+        _ toast: Toast,
+        @ViewBuilder trailingView: () -> TrailingView = { EmptyView() }
+    ) {
         self.toast = toast
         self.trailingView = trailingView()
     }
@@ -27,9 +30,7 @@ struct ToastMessageView<TrailingView: View>: View {
 
             Spacer(minLength: .zero)
 
-            if let trailingView {
-                trailingView
-            }
+            trailingView
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()

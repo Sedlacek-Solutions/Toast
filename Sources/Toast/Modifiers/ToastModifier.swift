@@ -12,7 +12,7 @@ struct ToastModifier<TrailingView: View>: ViewModifier {
     private let offset: CGFloat
     private let isAutoDismissed: Bool
     private let onDismiss: () -> Void
-    private let trailingView: TrailingView?
+    private let trailingView: TrailingView
     @Binding private var toast: Toast?
     @State private var isPresented: Bool = false
 
@@ -25,7 +25,7 @@ struct ToastModifier<TrailingView: View>: ViewModifier {
         edge: VerticalEdge,
         isAutoDismissed: Bool,
         onDismiss: @escaping () -> Void,
-        trailingView: TrailingView?
+        trailingView: TrailingView
     ) {
         self._toast = toast
         self.edge = edge
