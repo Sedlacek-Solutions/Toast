@@ -78,13 +78,13 @@ extension Toast {
 ///   - edge: The edge of the screen where the toast appears.
 ///   - autoDismissable: Whether the toast should automatically dismiss.
 ///   - onDismiss: A closure to call when the toast is dismissed.
-///   - trailingView: A closure that returns an optional trailing view to be displayed in the toast.
+///   - trailingView: A closure that returns a trailing view to be displayed in the toast.
 func toast<TrailingView: View>(
     _ toast: Binding<Toast?>,
     edge: VerticalEdge = .top,
     autoDismissable: Bool = false,
     onDismiss: @escaping () -> Void = {},
-    @ViewBuilder trailingView: @escaping () -> TrailingView? = { nil }
+    @ViewBuilder trailingView: @escaping () -> TrailingView = { EmptyView() }
 ) -> some View {...}
 ```
 
