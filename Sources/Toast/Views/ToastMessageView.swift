@@ -9,16 +9,54 @@ import SwiftUI
 struct ToastMessageView<TrailingView: View>: View {
     private let toast: Toast
     private let trailingView: TrailingView
-
+    private let explicitStyle: AnyToastStyle?
+    @Environment(\.toastStyle) private var environmentStyle
+    
+    //MARK: - Initialisers
+ 
+    /// Default (users environment or built-in style
     init(
         _ toast: Toast,
         @ViewBuilder trailingView: () -> TrailingView = { EmptyView() }
     ) {
         self.toast = toast
         self.trailingView = trailingView()
+        self.explicitStyle = nil
     }
 
+    /// Allows overriding the style just for this toast
+    init<S: ToastStyle>(
+        _ toast: Toast,
+        style: S,
+        @ViewBuilder trailingView: () -> TrailingView = { EmptyView() }
+    ) {
+        self.toast = toast
+        self.trailingView = trailingView()
+        self.explicitStyle = AnyToastStyle(style)
+    }
+
+    // MARK: - Body
+
+    
     var body: some View {
+        let chosenStyle = explicitStyle ?? environmentStyle
+        
+        if let style = chosenStyle {
+            /// Use custom style
+            style.makeBody(configuration: configuration)
+        } else {
+            /// Use built-in default look
+            DefaultBody
+        }
+
+    }
+    
+    //MARK: - Helpers
+    private var configuration: ToastStyleConfiguration {
+        .init(toast: toast, trailingView: AnyView(trailingView))
+    }
+    
+    private var DefaultBody: some View {
         HStack(spacing: 10) {
             toast.icon
                 .font(.system(size: 24, weight: .medium))
@@ -47,6 +85,64 @@ struct ToastMessageView<TrailingView: View>: View {
 }
 
 // MARK: Example Usages
+
+/// A quick purple style, just for demo
+struct PurpleToastStyle: ToastStyle {
+    func makeBody(configuration: ToastStyleConfiguration) -> some View {
+        HStack(spacing: 10) {
+            configuration.toast.icon
+                .font(.headline)
+                .fontWeight(.semibold)
+                .foregroundStyle(configuration.toast.color)
+                .padding(8)
+                .background(RoundedRectangle(cornerRadius: 12).fill(configuration.toast.color.opacity(0.3)))
+
+            Text(configuration.toast.message)
+                .font(.headline)
+                .fontWeight(.semibold)
+                .foregroundStyle(.primary)
+
+            Spacer(minLength: .zero)
+
+            configuration.trailingView
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(8)
+        .background(.ultraThinMaterial)
+        .cornerRadius(12)
+        .padding()
+        
+    }
+}
+
+/// An example of how to construct your very own Toast Style.
+struct ExampleToastStyle: ToastStyle {
+    func makeBody(configuration: ToastStyleConfiguration) -> some View {
+        HStack(spacing: 10) {
+            configuration.toast.icon
+                .font(.headline)
+                .fontWeight(.semibold)
+                .foregroundStyle(configuration.toast.color)
+                .padding(8)
+                .background(RoundedRectangle(cornerRadius: 12).fill(configuration.toast.color.opacity(0.3)))
+
+            Text(configuration.toast.message)
+                .font(.headline)
+                .fontWeight(.semibold)
+                .foregroundStyle(.primary)
+
+            Spacer(minLength: .zero)
+
+            configuration.trailingView
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(8)
+        .background(.ultraThinMaterial)
+        .cornerRadius(12)
+        .padding()
+        
+    }
+}
 
 extension ToastMessageView where TrailingView == EmptyView {
     static var infoExample: some View {
@@ -124,4 +220,6 @@ extension ExampleView: View {
         NetworkErrorExample()
         SomethingWrongExample()
     }
-}
+    .toastStyle(ExampleToastStyle())
+    .background(.background)
+} 

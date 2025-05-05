@@ -6,6 +6,36 @@
 
 import SwiftUI
 
+//MARK: - ToastStyle Environment Support
+
+/// Environment key that stores the style to be user by 'ToastMessageView'
+private struct ToastStyleEnvironmentKey: EnvironmentKey {
+    /// 'nil' means fallback to the built-in default style
+    static let defaultValue: AnyToastStyle? = nil
+}
+
+extension EnvironmentValues {
+    /// Current 'ToastStyle' for the view hierarchy, if one was provided with
+    /// '.toastStyle(_: )''.
+    var toastStyle: AnyToastStyle? {
+        get { self[ToastStyleEnvironmentKey.self] }
+        set { self[ToastStyleEnvironmentKey.self] = newValue }
+    }
+}
+
+public extension View {
+    /// Sets a custom 'ToastStyle' for the new hierarchy. Works just like .buttonStyle(_:), so you can call it high up in the view tree once:
+    ///
+    /// ContentView()
+    ///     .toastStyle(MyToastStyle())
+    ///
+    /// Every 'Toast' presented below that call will automatically adopt the given style, unless an explicit style is supplied to the individual '.toast' invocation.
+    
+    func toastStyle<S: ToastStyle>(_ style: S) -> some View {
+        environment(\.toastStyle, AnyToastStyle(style))
+    }
+}
+
 @MainActor
 struct ToastModifier<TrailingView: View>: ViewModifier {
     private let edge: VerticalEdge
@@ -14,6 +44,8 @@ struct ToastModifier<TrailingView: View>: ViewModifier {
     private let onDismiss: () -> Void
     private let trailingView: TrailingView
     @Binding private var toast: Toast?
+    @Environment(\.toastStyle) private var environmentStyle
+    private let explicitStyle: AnyToastStyle?
     @State private var isPresented: Bool = false
 
     private var yOffset: CGFloat {
@@ -25,7 +57,8 @@ struct ToastModifier<TrailingView: View>: ViewModifier {
         edge: VerticalEdge,
         isAutoDismissed: Bool,
         onDismiss: @escaping () -> Void,
-        trailingView: TrailingView
+        trailingView: TrailingView,
+        style: AnyToastStyle? = nil
     ) {
         self._toast = toast
         self.edge = edge
@@ -33,6 +66,7 @@ struct ToastModifier<TrailingView: View>: ViewModifier {
         self.trailingView = trailingView
         self.onDismiss = onDismiss
         self.offset = edge == .top ? -200 : 200
+        self.explicitStyle = style
     }
 
     private func onChangeDragGesture(_ value: DragGesture.Value) {
@@ -84,9 +118,21 @@ struct ToastModifier<TrailingView: View>: ViewModifier {
     @ViewBuilder
     private func toastView() -> some View {
         if let toast {
-            ToastMessageView(toast, trailingView: { trailingView })
+            let chosenStyle = explicitStyle ?? environmentStyle
+            
+            if let style = chosenStyle {
+                ToastMessageView(toast,
+                                 style: style,
+                                 trailingView: {trailingView})
                 .offset(y: yOffset)
                 .gesture(dragGesture)
+            } else {
+                ToastMessageView(toast, trailingView: { trailingView })
+                    .offset(y: yOffset)
+                    .gesture(dragGesture)
+            }
+        } else {
+            EmptyView()
         }
     }
 
