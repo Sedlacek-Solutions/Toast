@@ -125,6 +125,73 @@ extension ExampleView: View {
 }
 ```
 
+
+## Custom Toast Styles
+
+You can create and apply your own `ToastStyle` across the app or per instance.
+
+### Define a Custom Style
+
+```swift
+/// Example of a reusable toast style
+struct ExampleToastStyle: ToastStyle {
+    func makeBody(configuration: ToastStyleConfiguration) -> some View {
+        HStack(spacing: 10) {
+            configuration.toast.icon
+                .font(.headline)
+                .fontWeight(.semibold)
+                .foregroundStyle(configuration.toast.color)
+                .padding(8)
+                .background(RoundedRectangle(cornerRadius: 12).fill(configuration.toast.color.opacity(0.3)))
+
+            Text(configuration.toast.message)
+                .font(.headline)
+                .fontWeight(.semibold)
+                .foregroundStyle(.primary)
+
+            Spacer(minLength: .zero)
+
+            configuration.trailingView
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(8)
+        .background(.ultraThinMaterial)
+        .cornerRadius(12)
+        .padding()
+    }
+}
+```
+
+### Apply a Global Style
+
+To apply the same toast style across your entire view hierarchy, attach it like this:
+
+```swift
+ContentView()
+    .toastStyle(ExampleToastStyle())
+```
+
+### Override Style on a Specific Toast
+
+If you want to override the style for a particular toast, pass it directly into the toast modifier:
+
+```swift
+.toast(
+    $toast,
+    style: ExampleToastStyle(),
+    edge: .top,
+    autoDismissable: true,
+    onDismiss: { print("Dismissed") },
+    trailingView: {
+        Button("Action") { /* Do something */ }
+    }
+)
+```
+
+This gives you flexibility to mix and match styles depending on context.
+
+---
+
 ## Features
 - **Multiple Toast Types**: `success`, `error`, `info`, `warning`, `notice`
 - **Supports Trailing Views**: Buttons, Icons, Loaders
@@ -144,3 +211,4 @@ extension ExampleView: View {
 
 https://github.com/user-attachments/assets/a22d7e4e-e3dd-4733-8070-235c631e8292
 
+![Example of Custom ToastStyle](https://github.com/user-attachments/assets/b7a1e2c6-468f-4243-acca-8f63f96f41da)

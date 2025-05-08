@@ -46,7 +46,7 @@ struct ToastMessageView<TrailingView: View>: View {
             style.makeBody(configuration: configuration)
         } else {
             /// Use built-in default look
-            DefaultBody
+            defaultBody
         }
 
     }
@@ -56,7 +56,7 @@ struct ToastMessageView<TrailingView: View>: View {
         .init(toast: toast, trailingView: AnyView(trailingView))
     }
     
-    private var DefaultBody: some View {
+    private var defaultBody: some View {
         HStack(spacing: 10) {
             toast.icon
                 .font(.system(size: 24, weight: .medium))
@@ -108,10 +108,8 @@ struct PurpleToastStyle: ToastStyle {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(8)
-        .background(.ultraThinMaterial)
-        .cornerRadius(12)
+        .background(.ultraThinMaterial, in: .rect(cornerRadius: 12))
         .padding()
-        
     }
 }
 
@@ -137,8 +135,7 @@ struct ExampleToastStyle: ToastStyle {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(8)
-        .background(.ultraThinMaterial)
-        .cornerRadius(12)
+        .background(.ultraThinMaterial, in: .rect(cornerRadius: 12))
         .padding()
         
     }

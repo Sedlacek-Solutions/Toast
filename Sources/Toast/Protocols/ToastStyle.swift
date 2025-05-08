@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  ToastStyle.swift
 //  Toast
 //
 //  Created by Josh Bourke on 3/5/2025.

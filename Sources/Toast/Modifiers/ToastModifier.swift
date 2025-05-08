@@ -131,8 +131,6 @@ struct ToastModifier<TrailingView: View>: ViewModifier {
                     .offset(y: yOffset)
                     .gesture(dragGesture)
             }
-        } else {
-            EmptyView()
         }
     }
 
