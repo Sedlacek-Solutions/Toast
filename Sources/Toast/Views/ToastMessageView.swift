@@ -84,35 +84,7 @@ struct ToastMessageView<TrailingView: View>: View {
     }
 }
 
-// MARK: Example Usages
-
-/// A quick purple style, just for demo
-struct PurpleToastStyle: ToastStyle {
-    func makeBody(configuration: ToastStyleConfiguration) -> some View {
-        HStack(spacing: 10) {
-            configuration.toast.icon
-                .font(.headline)
-                .fontWeight(.semibold)
-                .foregroundStyle(configuration.toast.color)
-                .padding(8)
-                .background(RoundedRectangle(cornerRadius: 12).fill(configuration.toast.color.opacity(0.3)))
-
-            Text(configuration.toast.message)
-                .font(.headline)
-                .fontWeight(.semibold)
-                .foregroundStyle(.primary)
-
-            Spacer(minLength: .zero)
-
-            configuration.trailingView
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(8)
-        .background(.ultraThinMaterial, in: .rect(cornerRadius: 12))
-        .padding()
-    }
-}
-
+// MARK: Example Usage
 /// An example of how to construct your very own Toast Style.
 struct ExampleToastStyle: ToastStyle {
     func makeBody(configuration: ToastStyleConfiguration) -> some View {
