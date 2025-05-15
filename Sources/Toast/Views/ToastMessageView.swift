@@ -81,7 +81,7 @@ struct ToastMessageView<TrailingView: View>: View {
             .fill(toast.color.opacity(0.08))
             .overlay(
                 RoundedRectangle(cornerRadius: 10)
-                    .stroke(toast.color, lineWidth: 2) // Borde encima
+                    .stroke(toast.color, lineWidth: 2)
             )
     }
 }
