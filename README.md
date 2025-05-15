@@ -7,7 +7,7 @@
 
 | Platform | Minimum Version |
 |----------|-----------------|
-| iOS      | 17.0            |
+| iOS      | 16.0            |
 | macOS    | 14.0            |
 
 ## Get Started

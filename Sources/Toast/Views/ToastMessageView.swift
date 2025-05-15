@@ -78,9 +78,11 @@ struct ToastMessageView<TrailingView: View>: View {
 
     private var backgroundView: some View {
         RoundedRectangle(cornerRadius: 10)
-            .fill(.background.secondary)
             .fill(toast.color.opacity(0.08))
-            .stroke(toast.color, lineWidth: 2)
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(toast.color, lineWidth: 2)
+            )
     }
 }
 

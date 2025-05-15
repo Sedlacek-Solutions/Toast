@@ -73,12 +73,6 @@ struct ToastModifier<TrailingView: View>: ViewModifier {
         dismissToastAnimation()
     }
 
-    private func onChangeToast(_ oldToast: Toast?, _ newToast: Toast?) {
-        if newToast != nil {
-            presentToastAnimation()
-        }
-    }
-
     private func presentToastAnimation() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             withAnimation(.spring()) {
@@ -108,7 +102,11 @@ struct ToastModifier<TrailingView: View>: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .onChange(of: toast, onChangeToast)
+            .onChange(of: toast) { newToast in
+                if newToast != nil {
+                    presentToastAnimation()
+                }
+            }
             .overlay(
                 alignment: edge.alignment,
                 content: toastView
