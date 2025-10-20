@@ -51,24 +51,26 @@ extension ExampleScreen: View {
 /// Extension to the Toast struct to provide convenience initializers for different types of toasts.
 extension Toast {
     /// Creates a debug toast with a purple color and a debug icon.
-    public static func debug(message: String) -> Toast {...}
+    public static func debug(message: LocalizedStringKey) -> Toast {...}
 
     /// Creates an error toast with a red color and an error icon.
-    public static func error(message: String) -> Toast {...}
+    public static func error(message: LocalizedStringKey) -> Toast {...}
 
     /// Creates an info toast with a blue color and an info icon.
-    public static func info(message: String) -> Toast {...}
+    public static func info(message: LocalizedStringKey) -> Toast {...}
 
     /// Creates a notice toast with an orange color and a notice icon.
-    public static func notice(message: String) -> Toast {...}
+    public static func notice(message: LocalizedStringKey) -> Toast {...}
 
     /// Creates a success toast with a green color and a success icon.
-    public static func success(message: String) -> Toast {...}
+    public static func success(message: LocalizedStringKey) -> Toast {...}
 
     /// Creates a warning toast with a yellow color and a warning icon.
-    public static func warning(message: String) -> Toast {...}
+    public static func warning(message: LocalizedStringKey) -> Toast {...}
 }
 ```
+
+> **Tip:** If you have an existing string literal, you can continue calling the same APIs without any migration—the library now bridges `String` and `LocalizedStringKey` automatically. To pass an explicit localization key, call something like `.success(message: LocalizedStringKey("toast.success"))`.
 
 3. Additional Options for Toast ViewModifier
 ```swift
