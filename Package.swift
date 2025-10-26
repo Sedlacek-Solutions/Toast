@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "Toast",
+    name: "SwiftUI-Toast",
     defaultLocalization: "en",
     platforms: [.iOS(.v16), .macOS(.v14)],
     products: [
