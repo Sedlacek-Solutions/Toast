@@ -6,27 +6,32 @@
 
 import SwiftUI
 
-public struct Toast {
+public struct Toast: Identifiable {
+    public let id: UUID
     public let icon: Image
     public let color: Color
     public let message: LocalizedStringKey
 
     public init(
+        id: UUID = UUID(),
         icon: Image,
         color: Color,
         message: LocalizedStringKey
     ) {
+        self.id = id
         self.icon = icon
         self.color = color
         self.message = message
     }
 
     public init<S: StringProtocol>(
+        id: UUID = UUID(),
         icon: Image,
         color: Color,
         message: S
     ) {
         self.init(
+            id: id,
             icon: icon,
             color: color,
             message: LocalizedStringKey(String(message))
@@ -36,8 +41,11 @@ public struct Toast {
 
 extension Toast: Hashable {
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(color)
-        hasher.combine(message)
+        hasher.combine(id)
+    }
+
+    public static func == (lhs: Toast, rhs: Toast) -> Bool {
+        lhs.id == rhs.id
     }
 }
 
