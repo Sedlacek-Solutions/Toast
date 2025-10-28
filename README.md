@@ -1,7 +1,7 @@
-# Toast
+# SwiftUI-Toast
 
 ## Description
-`Toast` is a lightweight SwiftUI library that provides a simple way to display toast messages.
+`SwiftUI-Toast` is a lightweight SwiftUI library that provides a simple way to display toast messages.
 
 ## Requirements
 
